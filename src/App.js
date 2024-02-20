@@ -1,154 +1,184 @@
-import { storage } from "./firebase/firebaseConfig";
-import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
+// import { storage } from "./firebase/firebaseConfig";
+// import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
+// import React from "react";
+// import Select from "react-select";
+// import { useState, useRef, useEffect } from "react";
+// import {Toaster,toast} from "react-hot-toast";
+
+// function App() {
+//   const facultyOptions = [
+//     { value: "DBMS", label: "DBMS" },
+//     { value: "CN", label: "CN" },
+//     { value: "OOPS", label: "OOPS" },
+//     { value: "OS", label: "OS" },
+//     { value: "DSA", label: "DSA" },
+//     { value: "AIML", label: "AIML" },
+//     { value: "DM", label: "DM" },
+//   ];
+
+//   const ClassOptions = [
+//     { value: "3A", label: " 3A" },
+//     { value: "3B", label: " 3B" },
+//     { value: "3C", label: " 3C" },
+//     { value: "5A", label: " 5A" },
+//     { value: "5B", label: " 5B" },
+//     { value: "5C", label: " 5C" },
+//   ];
+
+//   const [selectedFaculty, setSelectedFaculty] = useState(null);
+//   const [selectedClass, setSelectedClass] = useState(null);
+//   const [flag, setFlag] = useState(false);
+//   const [submitButton, setSubmitButton] = useState(false);
+//   let rawImageData;
+
+//   const videoRef = useRef(null);
+//   const [imgSrc, setImgSrc] = useState("");
+
+//   useEffect(() => {
+//     console.log(imgSrc);
+//   }, [imgSrc]);
+
+//   const startCamera = async () => {
+//     try {
+//       setFlag(true);
+//       const stream = await navigator.mediaDevices.getUserMedia({
+//         video: { facingMode: "environment" },
+//       });
+//       videoRef.current.srcObject = stream;
+//     } catch (error) {
+//       console.error("Error accessing camera:", error);
+//     }
+//   };
+
+//   const captureImage = () => {
+//     setFlag(false);
+//     setSubmitButton(true);
+//     const canvas = document.createElement("canvas");
+//     canvas.width = videoRef.current.videoWidth;
+//     canvas.height = videoRef.current.videoHeight;
+//     canvas.getContext("2d").drawImage(videoRef.current, 0, 0);
+
+//     const dataUrl = canvas.toDataURL("image/jpeg");
+//     setImgSrc(dataUrl);
+//     console.log(imgSrc);
+//   };
+
+//   const decodeImage = () => {
+//     const base64ImageData = imgSrc.split(",")[1];
+//     const binaryImageData = atob(base64ImageData);
+
+//     // Convert the binary data to a Uint8Array
+//     const uint8ArrayImageData = new Uint8Array(binaryImageData.length);
+//     for (let i = 0; i < binaryImageData.length; i++) {
+//       uint8ArrayImageData[i] = binaryImageData.charCodeAt(i);
+//     }
+
+//     console.log(uint8ArrayImageData);
+
+//     uploadImageToStorage(uint8ArrayImageData);
+//   };
+
+//   const uploadImageToStorage = (rawImageData) => {
+//     // Get the current date to use as the image name
+//     const currentDate = new Date().toISOString();
+//     const filePath = `${selectedFaculty.value}/${selectedClass.value}/${currentDate}.jpeg`;
+
+//     // Specify content type when uploading image
+//     const metadata = {
+//       contentType: "image/jpeg", // or 'image/jpeg' depending on the image format
+//     };
+
+//     // Create a reference to the storage location
+
+//     const storageRef = ref(storage, filePath);
+
+//     uploadBytes(storageRef, rawImageData, metadata).then((snapshot) => {
+//      toast.success("Image Uploaded successfully")
+//      setSubmitButton(false)
+
+//     });
+//   };
+
+//   return (
+//     <div>
+//       <div className="flex">
+//         <Select
+//           options={facultyOptions}
+//           placeholder="Select Subject..."
+//           isSearchable
+//           value={selectedFaculty}
+//           onChange={setSelectedFaculty}
+//           className="custom-select w-6/12 m-5 border border-blue-500 rounded"
+//         />
+
+//         <Select
+//           options={ClassOptions}
+//           placeholder="Select Class..."
+//           isSearchable
+//           value={selectedClass}
+//           onChange={setSelectedClass}
+//           className="custom-select w-6/12 m-5 border border-blue-500 rounded"
+//         />
+//       </div>
+//       <div className="flex col gap-4 justify-center">
+//         {!flag && !submitButton && (
+//           <button className="p-5 bg-green-400 rounded-3xl" onClick={startCamera}>
+//             Take picture
+//           </button>
+//         )}
+//       </div>
+//       <div className="md:flex md:gap-5 col justify-center">
+//         {imgSrc && submitButton && <img src={imgSrc} alt="Captured" />}
+//         {!imgSrc && <video ref={videoRef} autoPlay />}
+
+//         {flag && (
+//           <center>
+//             <button
+//               className="p-5 bg-green-400 rounded-3xl mt-5 md:h-20"
+//               onClick={captureImage}
+//             >
+//               Capture picture
+//             </button>
+//           </center>
+//         )}
+
+//         {submitButton && (
+//           <center>
+//             <button
+//               className="p-5 bg-green-400 rounded-3xl mt-5 md:h-20"
+//               onClick={decodeImage}
+//             >
+//               Submit picture
+//             </button>
+//           </center>
+//         )}
+//       </div>
+//       <Toaster/>
+//     </div>
+
+//   );
+// }
+
+// export default App;
+
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import TakeImage from "./components/TakeImage";
+import Cvfiles from "./components/csvfiles";
+import { Toaster } from "react-hot-toast";
 import React from "react";
-import Select from "react-select";
-import { useState, useRef, useEffect } from "react";
 
 function App() {
-  const facultyOptions = [
-    { value: "DBMS", label: "DBMS" },
-    { value: "CN", label: "CN" },
-    { value: "OOPS", label: "OOPS" },
-    { value: "OS", label: "OS" },
-    { value: "DSA", label: "DSA" },
-    { value: "AIML", label: "AIML" },
-    { value: "DM", label: "DM" },
-  ];
-
-  const ClassOptions = [
-    { value: "3A", label: " 3A" },
-    { value: "3B", label: " 3B" },
-    { value: "3C", label: " 3C" },
-    { value: "5A", label: " 5A" },
-    { value: "5B", label: " 5B" },
-    { value: "5C", label: " 5C" },
-  ];
-
-  const [selectedFaculty, setSelectedFaculty] = useState(null);
-  const [selectedClass, setSelectedClass] = useState(null);
-  const [flag, setFlag] = useState(false);
-  const [submitButton, setSubmitButton] = useState(false);
-  let rawImageData;
-
-  const videoRef = useRef(null);
-  const [imgSrc, setImgSrc] = useState("");
-
-  useEffect(() => {
-    console.log(imgSrc);
-  }, [imgSrc]);
-
-  const startCamera = async () => {
-    try {
-      setFlag(true);
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" },
-      });
-      videoRef.current.srcObject = stream;
-    } catch (error) {
-      console.error("Error accessing camera:", error);
-    }
-  };
-
-  const captureImage = () => {
-    setFlag(false);
-    setSubmitButton(true);
-    const canvas = document.createElement("canvas");
-    canvas.width = videoRef.current.videoWidth;
-    canvas.height = videoRef.current.videoHeight;
-    canvas.getContext("2d").drawImage(videoRef.current, 0, 0);
-
-    const dataUrl = canvas.toDataURL("image/jpeg");
-    setImgSrc(dataUrl);
-    console.log(imgSrc);
-  };
-
-  const decodeImage = () => {
-    const base64ImageData = imgSrc.split(",")[1];
-    rawImageData = atob(base64ImageData);
-    console.log(rawImageData);
-
-    uploadImageToStorage(rawImageData);
-  };
-
-  const uploadImageToStorage = (rawImageData) => {
-    // Get the current date to use as the image name
-    const currentDate = new Date().toISOString();
-    const filePath = `${selectedFaculty.value}/${selectedClass.value}/${currentDate}.jpeg`;
-
-    // Specify content type when uploading image
-    const metadata = {
-      contentType: "image/jpeg", // or 'image/jpeg' depending on the image format 
-    };
-
-    // Create a reference to the storage location
-   
-    const storageRef = ref(storage, filePath);
-
-    uploadBytes(storageRef, rawImageData, metadata).then((snapshot) => {
-      console.log("Image uploaded successfully");
-    });
-  };
-
   return (
     <div>
-      <div className="flex">
-        <Select
-          options={facultyOptions}
-          placeholder="Select Faculty..."
-          isSearchable
-          value={selectedFaculty}
-          onChange={setSelectedFaculty}
-          className="custom-select w-6/12 m-5 border border-blue-500 rounded"
-        />
-
-        <Select
-          options={ClassOptions}
-          placeholder="Select Class..."
-          isSearchable
-          value={selectedClass}
-          onChange={setSelectedClass}
-          className="custom-select w-6/12 m-5 border border-blue-500 rounded"
-        />
-      </div>
-      <div className="flex col gap-4 justify-center">
-        {!flag && !submitButton && (
-          <button className="p-5 bg-red-400 rounded-3xl" onClick={startCamera}>
-            Take picture
-          </button>
-        )}
-      </div>
-      <div className="md:flex md:gap-5 col justify-center">
-        {imgSrc && <img src={imgSrc} alt="Captured" />}
-        {!imgSrc && <video ref={videoRef} autoPlay />}
-
-        {flag && (
-          <center>
-            <button
-              className="p-5 bg-red-400 rounded-3xl mt-5 md:h-20"
-              onClick={captureImage}
-            >
-              Upload picture
-            </button>
-          </center>
-        )}
-
-        {submitButton && (
-          <center>
-            <button
-              className="p-5 bg-red-400 rounded-3xl mt-5 md:h-20"
-              onClick={decodeImage}
-            >
-              Submit picture
-            </button>
-          </center>
-        )}
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<TakeImage />}></Route>
+          <Route path="/csv/:sub/:sec" element={<Cvfiles />}></Route>
+        </Routes>
+      </BrowserRouter>
+      <Toaster />
     </div>
   );
 }
 
 export default App;
-
-
-
-
