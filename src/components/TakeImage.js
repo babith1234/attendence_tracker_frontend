@@ -5,6 +5,7 @@ import Select from "react-select";
 import { useState, useRef, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import Navbar from "./navbar";
 
 function TakeImage() {
   const facultyOptions = [
@@ -115,7 +116,8 @@ function TakeImage() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen">
+      <Navbar />
       <div className="flex">
         <Select
           options={facultyOptions}
@@ -161,7 +163,7 @@ function TakeImage() {
         {flag && (
           <center>
             <button
-              className="p-5 bg-green-400 rounded-3xl mt-5 md:h-20"
+              className="p-5 bg-green-400 rounded-3xl mt-5 md:mt-40 md:h-20"
               onClick={captureImage}
             >
               Capture picture

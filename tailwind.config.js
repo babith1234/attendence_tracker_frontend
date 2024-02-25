@@ -2,6 +2,7 @@
 module.exports = {
   content: [ "./src/**/*.js",
 ],
+darkMode:'class',
   theme: {
     extend: {
       fontFamily: {
@@ -27,6 +28,10 @@ module.exports = {
         'friendly': ['Quicksand', 'sans-serif'],
         'classic': ['Bodoni Moda', 'serif'],
       },
+      colors:{
+        "dark":'#232A3C',
+        "medium":'#293245'
+      }
     },
   },
   plugins: [],
