@@ -5,6 +5,7 @@ import Select from "react-select";
 import { useState, useRef, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import Navbar from "./navbar";
 
 function TakeImage() {
   const facultyOptions = [
@@ -42,13 +43,14 @@ function TakeImage() {
 
   const startCamera = async () => {
     try {
-      setFlag(true);
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment" },
       });
       videoRef.current.srcObject = stream;
+      setFlag(true);
     } catch (error) {
       console.error("Error accessing camera:", error);
+      setFlag(false);
     }
   };
 
@@ -81,23 +83,38 @@ function TakeImage() {
   };
 
   const uploadImageToStorage = (rawImageData) => {
-    // Get the current date to use as the image name
-    const currentDate = new Date().toISOString();
-    const filePath = `pictures/${selectedFaculty.value}/${selectedClass.value}/${currentDate}.jpeg`;
+    try {
+      // Get the current date to use as the image name
+      const currentDate = new Date().toISOString();
+      const filePath = `pictures/${selectedFaculty.value}/${selectedClass.value}/${currentDate}.jpeg`;
 
-    // Specify content type when uploading image
-    const metadata = {
-      contentType: "image/jpeg", // or 'image/jpeg' depending on the image format
-    };
+      // Specify content type when uploading image
+      const metadata = {
+        contentType: "image/jpeg", // or 'image/jpeg' depending on the image format
+      };
 
-    // Create a reference to the storage location
+      // Create a reference to the storage location
 
-    const storageRef = ref(storage, filePath);
+      const storageRef = ref(storage, filePath);
 
-    uploadBytes(storageRef, rawImageData, metadata).then((snapshot) => {
-      toast.success("Image Uploaded successfully");
+      uploadBytes(storageRef, rawImageData, metadata).then((snapshot) => {
+        toast.success("Image Uploaded successfully");
+        setSubmitButton(false);
+      });
+    } catch (error) {
+      console.error("Error uploading image", error);
+      toast.error(
+        "Error uploading image. Please choose Subject and class before capturing image",
+        {
+          style: {
+            borderRadius: "10px",
+            background: "#232A3C",
+            color: "#fff",
+          },
+        }
+      );
       setSubmitButton(false);
-    });
+    }
   };
 
   const handlecsv = () => {
@@ -115,7 +132,8 @@ function TakeImage() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen">
+      <Navbar />
       <div className="flex">
         <Select
           options={facultyOptions}
@@ -161,7 +179,7 @@ function TakeImage() {
         {flag && (
           <center>
             <button
-              className="p-5 bg-green-400 rounded-3xl mt-5 md:h-20"
+              className="p-5 bg-green-400 rounded-3xl mt-5 md:mt-40 md:h-20"
               onClick={captureImage}
             >
               Capture picture
