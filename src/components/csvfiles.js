@@ -50,7 +50,7 @@ function Cvfiles() {
           <div className="flex min-h-screen  justify-center ">
             {urls.length === 0 ? (
               <p className="text-center text-gray-500">
-                No Attendance sheet found for {sub} - {sec}
+                No Attendance sheet found! for {sub} - {sec}
               </p>
             ) : (
               urls.map((url, index) => (
