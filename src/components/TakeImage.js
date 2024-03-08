@@ -105,7 +105,7 @@ function TakeImage() {
         setTimeout(async () => {
           // Inside the setTimeout, directly make the axios.post() call
           await axios
-            .post("http://127.0.0.1:3002/display_image", {
+            .post("http://192.168.146.71:3002/display_image", {
               image_url: `pictures/${selectedFaculty.value}/${selectedClass.value}/${currentDate  }.jpeg`,
             })
             .then((response) => {
