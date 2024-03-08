@@ -3,9 +3,10 @@ import { ref, uploadBytes, listAll, getDownloadURL } from "firebase/storage";
 import React from "react";
 import Select from "react-select";
 import { useState, useRef, useEffect } from "react";
-  import { Toaster, toast } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./navbar";
+import axios from "axios";
 
 function TakeImage() {
   const facultyOptions = [
@@ -100,6 +101,20 @@ function TakeImage() {
       uploadBytes(storageRef, rawImageData, metadata).then((snapshot) => {
         toast.success("Image Uploaded successfully");
         setSubmitButton(false);
+
+        setTimeout(async () => {
+          // Inside the setTimeout, directly make the axios.post() call
+          await axios
+            .post("http://127.0.0.1:3002/display_image", {
+              image_url: `pictures/${selectedFaculty}/${selectedClass}/${currentDate}.jpeg`,
+            })
+            .then((response) => {
+              console.log(response);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }, 5000);
       });
     } catch (error) {
       console.error("Error uploading image", error);

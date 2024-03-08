@@ -14,7 +14,7 @@ function Cvfiles() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const folderRef = ref(storage, `csv/${sub}/${sec}`);
+    const folderRef = ref(storage, `csv2/${sub}/${sec}`);
 
     listAll(folderRef)
       .then(function (result) {
@@ -67,17 +67,6 @@ function Cvfiles() {
                           {new Date().toLocaleDateString()}
                         </span>
                       </div>
-
-                      {/* <div className="flex flex-col items-center">
-                        <img
-                          src={csvImage}
-                          alt="CSV"
-                          className="w-40 h-40 mb-2"
-                        />
-                        <span className="dark:text-white block text-center">
-                          {new Date().toLocaleDateString()}
-                        </span>
-                      </div> */}
                     </div>
                   </a>
                 </div>
